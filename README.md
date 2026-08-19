@@ -1,185 +1,116 @@
 # dotfiles
 
-Watch the walkthrough: https://youtu.be/5N-okeDdIuI
+My Apple Silicon Mac setup, managed with nix-darwin, Home Manager, nix-homebrew, Homebrew, and the Mac App Store. The repository is the source of truth for my machine: a fresh install should reproduce the applications, command-line tools, shell, editor, terminal, and macOS preferences I use.
 
-My personal Mac setup, managed with nix-darwin and home-manager.
-One repo, one command, and a fresh Mac ends up configured the same way every time.
+## What this manages
 
-## Contributing / Using This Repo
+- macOS defaults for appearance, keyboard repeat, the menu bar, Dock, Finder, and trackpad
+- Homebrew formulae for machine-wide CLIs such as the AWS CLI, GitHub CLI, Git, Go, Just, OpenCode, and uv
+- Homebrew casks for browsers, AI coding agents, Docker Desktop, Ghostty, messaging apps, Raycast, Spotify, VS Code, and WezTerm
+- OpenSpec from its official Nix flake, installed through Home Manager
+- Mac App Store installations for Apple applications and Xcode
+- Home Manager packages for foundational CLIs such as ripgrep, fd, fzf, jq, lazygit, Neovim, and fnm
+- Zsh, Starship, completions, aliases, autosuggestions, and syntax highlighting
+- Neovim, WezTerm, and herdr configuration
+- Shared personal instructions for Claude Code, Codex, and OpenCode
 
-These are my personal dotfiles, shared publicly so people can read them, learn from them, and fork them freely.
-Feature requests and pull requests are not accepted here, and PRs are auto-closed.
-If you find a bug, please open a GitHub Issue using the bug report template.
-
-## What you get
-
-Running the switch builds:
-
-- System settings (dark mode, key repeat, dock, Finder, trackpad)
-- Homebrew apps (casks and CLI tools)
-- Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, Hack Nerd Font)
-- Shell (zsh, aliases, starship prompt)
-- Editor (Neovim config with the rose-pine moon theme)
-- Terminal (WezTerm config with the rose-pine moon theme and dimmed unfocused windows)
-- Agent configs (Claude, Codex, opencode all share one AGENTS.md)
-- Optional Pi theme and local extensions, generic UI settings and model overrides, plus two deliberately pinned third-party Pi packages
-
-## Prerequisites
-
-- Apple Silicon Mac, by default.
-- Intel Mac: change one line.
-  In `configuration.nix`, set `nixpkgs.hostPlatform = "x86_64-darwin";` (the comment right there tells you the same thing).
+The authoritative package lists are in `configuration.nix` and `home.nix`.
 
 ## Fresh-machine setup
 
-On a brand new Mac, from a bare clone of this repo:
+Clone this repository on an Apple Silicon Mac:
 
 ```sh
-git clone https://github.com/kunchenguid/dotfiles.git
+git clone https://github.com/jo3luttrell/dotfiles.git
 cd dotfiles
 ```
 
-Before you run it: review "Make it yours" below.
-Change the host label or CPU architecture if needed, and read the Homebrew cleanup warning.
-`bootstrap.sh` applies the config to your machine, so do this first.
+Open the App Store and sign in to your Apple Account before applying the configuration. Modern macOS does not provide a supported non-interactive App Store sign-in, so this authentication step cannot be automated. Once you are signed in, nix-darwin installs the applications declared in `homebrew.masApps` automatically.
+
+Then run:
 
 ```sh
 ./bootstrap.sh
 ```
 
-`bootstrap.sh` does four things, in order:
+`bootstrap.sh`:
 
-1. Installs Determinate Nix, if it isn't already installed.
-2. Symlinks this repo to `~/.dotfiles`.
-   This has to happen before the first build, because `home.nix` points at config files through `~/.dotfiles`.
-3. Checks the `user` configured in `flake.nix` against your actual macOS username, and offers to fix it for you if they differ.
-4. Runs the first `darwin-rebuild switch`.
-   It fetches the `darwin-rebuild` tool from the nix-darwin 26.05 release branch, then applies this repo's locked flake config.
+1. Installs Determinate Nix if needed.
+2. Symlinks the checkout to `~/.dotfiles`, which is the stable path used by the Home Manager links.
+3. Checks the username in `flake.nix` against the current macOS account and offers to update it if needed.
+4. Runs the first `darwin-rebuild switch` for the `mac` configuration.
 
-After that, `darwin-rebuild` exists and you're on the normal workflow below.
+After the first switch, use the normal workflow below.
+
+### Migrating an existing shell
+
+Home Manager owns the generated `~/.zshenv`, `~/.zprofile`, and `~/.zshrc`. Before the first switch on a machine with unmanaged versions of those files, move them to backup filenames so activation can create the managed files.
+
+## Daily use
+
+Edit the Nix configuration or a file under `home/`, then apply changes with:
+
+```sh
+./rebuild.sh
+```
+
+Files under `home/` are linked directly into the home directory, so edits to Neovim, WezTerm, herdr, and agent instructions take effect without a rebuild. Package lists, shell configuration, and system defaults require a rebuild.
 
 ### Validate without applying
-
-Once Nix is installed (`bootstrap.sh` step 1 handles that), you can check that the config builds without touching your system - handy when you have edited something:
 
 ```sh
 nix flake check --no-build
 nix build .#darwinConfigurations.mac.system --dry-run
 ```
 
-If you renamed the host label in "Make it yours", substitute your label for `mac` in these commands.
+## Package ownership
 
-## Daily use
+Every tool has one package manager. Declaring the same tool in multiple places installs competing copies and makes `PATH` decide which one runs.
 
-Edit the config files in place, then apply:
+- Home Manager and Nixpkgs own foundational command-line tools that should follow `flake.lock`, plus programs whose Home Manager modules also own useful configuration.
+- Homebrew owns native macOS applications and application-like tools that should track upstream releases more directly. This includes Claude Code, Codex, and OpenCode.
+- `homebrew.masApps` owns Mac App Store applications.
+- Project-specific runtimes and dependencies belong in the project or its Nix development shell rather than this machine-wide configuration.
 
-```sh
-./rebuild.sh
-```
-
-That's it.
-No separate build-and-copy step.
-
-## Make it yours
-
-This repo is mine.
-If you clone it, review these before you run `bootstrap.sh`:
-
-- **Username**: run `./bootstrap.sh` (it detects your macOS username and offers to set it) OR change the single `user = "kunchen"` line in `flake.nix`.
-  Everything else (`configuration.nix`, `home.nix`, home directory paths) is threaded from that one variable.
-- **Host label** `"mac"`, in three places: `flake.nix` (the `darwinConfigurations."mac"` name), `rebuild.sh:5` (the `#mac` at the end of the flake reference), and `bootstrap.sh`'s first-switch command (also `#mac`).
-  All three have to match.
-- **CPU architecture**, `hostPlatform` in `configuration.nix` (see Prerequisites above).
-
-**Git identity:** this config deliberately does not set your git name or email.
-Git will stop your first commit and tell you to set them (`git config --global user.name "Your Name"` and `git config --global user.email you@example.com`).
-If you'd rather manage that declaratively, add this back to `home.nix` with your own identity:
-
-```nix
-programs.git = {
-  enable = true;
-  settings.user = {
-    name = "Your Name";
-    email = "you@example.com";
-  };
-};
-```
-
-**Homebrew cleanup warning:** `configuration.nix` sets `homebrew.onActivation.cleanup = "zap"`.
-That means every time you switch, Homebrew removes any package or cask on your machine that isn't listed in the `brews` and `casks` arrays in `configuration.nix`.
-If you already have Homebrew stuff installed that isn't in that list, the first switch will uninstall it.
-Read through `brews` and `casks` before you run `bootstrap.sh` or `rebuild.sh` for the first time, and add anything you want to keep.
-
-**About `herdr`:** it's in the `brews` list.
-It's a real public Homebrew formula (`brew info herdr` finds it in homebrew-core, no tap needed), so it will install fine.
-If you don't use it, just remove it from `brews` in your copy.
-
-**Heads-up:**
-
-- `home/AGENTS.md` is my personal agent policy, and `home.nix` installs it for Claude, Codex, and opencode.
-  If you clone this repo, you'd silently inherit my agent instructions - edit or delete `home/AGENTS.md` if you don't want that.
-- The `cc` and `co` shell aliases in `home.nix` are high-agency shortcuts: `claude --dangerously-skip-permissions` and `codex --full-auto`.
-  They're convenient for me, but know what they do before you use them.
-
-## Repo tour
-
-- `flake.nix` - the entry point.
-  Wires up nixpkgs, nix-darwin, home-manager, and nix-homebrew, and declares the `mac` machine.
-- `configuration.nix` - system-level config: macOS defaults, Homebrew.
-- `home.nix` - user-level config: shell, packages, prompt, and the symlinks described below.
-- `rebuild.sh` - re-applies the config after the first switch.
-  Run this every time you make a change.
-- `home/` - the actual config files that get symlinked into place; the sections below explain the shared symlink model and Pi's narrower selective setup.
-
-## How the symlinks work
-
-The files under `home/` are the real files - editing them here is editing your live config, no rebuild needed to see the change in your editor.
-`home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
-You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
-
-## Optional Pi configuration
-
-Pi is an opt-in CLI, not a dependency this repository vendors. Install it from its owner with the [official Pi instructions](https://pi.dev), for example:
+Before adding a tool, search both package definitions and the enabled `programs.*` modules:
 
 ```sh
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+rg -n 'tool-name' home.nix configuration.nix
 ```
 
-[Pi Launcher](https://github.com/kunchenguid/homebrew-tap) is also optional and installed from its owner, not declared by this config:
+## Homebrew behavior
 
-```sh
-brew install --cask kunchenguid/tap/pi-launcher
-```
+`nix-homebrew.autoMigrate = true` adopts an existing Homebrew installation when applying the configuration. Rebuilds install the formulae, casks, and Mac App Store applications declared in `configuration.nix`, but do not remove undeclared Homebrew packages, applications, or taps.
 
-Home Manager owns exactly two repository-authored Pi directories: `~/.pi/agent/themes` and `~/.pi/agent/extensions`. It also links `models.json` and `settings.json` as individual files. The local extension directory is for public, repository-authored extensions only - third-party package code never belongs there. Run `/reload` after editing a local extension or other Pi resources. The terminal-title extension shows a spinner while Pi is working, then a completion mark with the session name or current directory. The `rose-pine-moon` theme was authored clean-room from the public [Rosé Pine Moon palette](https://rosepinetheme.com/palette) and Pi's [public theme schema](https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json), not from a private or live theme file.
+## Shell behavior
 
-### Pi Calm
+Home Manager generates the shell files from `home.nix`:
 
-`home/.pi/agent/extensions/calm` is a standalone local Pi extension. Home Manager's existing global extensions-directory link makes Pi auto-load it without another declaration. `/calm` toggles a conversation-only presentation mode and is off by default. Its choice is stored locally in `~/.pi/agent/calm` (or the directory selected by `PI_CODING_AGENT_DIR`), not in this repository or Home Manager. Adapted from Firstmate under the bundled MIT license, Calm imports no Firstmate modules and has no Firstmate runtime dependency.
+- Session variables and standard paths are managed declaratively.
+- The generated login-shell profile initializes Homebrew through nix-homebrew's system link.
+- Home Manager and Homebrew package completions are discovered through Zsh's completion system.
+- The fzf module owns both the package and its Zsh integration.
+- fnm switches Node versions from project version files. Node versions themselves remain project-specific and are not installed globally by this repository.
 
-When enabled, Calm hides collapsed thinking and the call/result shells for Pi's seven built-in tools (`read`, `bash`, `edit`, `write`, `grep`, `find`, and `ls`) without leaving blank transcript rows. During an active run it replaces Pi's working row with a two-line animated blue-water, yellow-boat widget. `/calm` restores Pi's stock rendering and preserves the existing Ctrl+O tool-expansion choice.
+The `cc` and `co` aliases intentionally run Claude Code and Codex in high-agency modes. Review the commands in `home.nix` before using them in an unfamiliar repository.
 
-Calm never changes prompts, tool execution, model context, session data, or ordering. `/share` and `/export` use the complete stock transcript. Generic custom tools, images, and unsupported Pi transcript classes deliberately remain visible because Pi has no safe general-purpose transcript filter. If a future Pi release no longer exports the exact collapsed-thinking rendering seam, Calm logs one diagnostic and leaves only that adapter disabled; all other behavior remains available.
+## Repository layout
 
-Pi's package system declares two third-party sources in the linked global `settings.json`:
-
-- `npm:@ryan_nookpi/pi-extension-codex-fast-mode@0.2.6` - the exact public npm release from `ryan_nookpi`.
-- `git:github.com/algal/pi-openai-server-compaction@c6d593087709e9481223dc6c6c2269b371b5e055` - the exact public `algal` commit for experimental OpenAI server-side compaction.
-
-The version and commit are immutable pins, so Pi does not move them during package updates. Deliberate updates require a new source and security audit, followed by an explicit pin change in `home/.pi/agent/settings.json`. On Pi 0.82.0, global settings declarations install missing pinned packages automatically at startup. No one-time install command is required. Pi keeps the downloaded npm and git package trees in its own unmanaged `~/.pi/agent/npm` and `~/.pi/agent/git` runtime directories, outside Home Manager and Git tracking.
-
-Both packages execute with your full user permissions and must be trusted like any other executable code. The compaction package is experimental, sends the relevant OpenAI compaction and continuity data to OpenAI, and upstream declares the stale peer range `>=0.80.9 <0.81.0`; this exact immutable ref was locally proven to load and perform remote compaction on Pi 0.82.0. Do not treat that proof as a guarantee for a different Pi version or a different package ref.
-
-Home Manager deliberately does not manage `~/.pi/agent` itself, or Pi authentication, sessions, trust decisions, caches, npm/git package trees, or any other runtime state. The model overrides contain no credentials or endpoint settings, do not choose a default model, and only take effect after you authenticate Pi yourself. This remains an additive post-video layer: it does not install Pi, a launcher, or package source code into this repository.
+- `flake.nix` defines the pinned inputs, the `joe` account, and the `mac` nix-darwin configuration.
+- `configuration.nix` contains macOS defaults and Homebrew/Mac App Store declarations.
+- `home.nix` contains Home Manager packages, shell behavior, Starship, and links into `home/`.
+- `bootstrap.sh` performs the first installation and switch.
+- `rebuild.sh` applies later changes.
+- `home/` contains the live Neovim, WezTerm, herdr, and agent configuration linked into the home directory.
 
 ## Notes
 
-The first time you launch `nvim`, it bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins from GitHub.
-That needs network access once; after that it's offline.
-Neovim and WezTerm both use the rose-pine moon theme.
-Neovim keeps italics off and uses a transparent background on macOS, Windows, and WSL so it matches the terminal setup.
+The first Neovim launch bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) and downloads the pinned plugins in `home/.config/nvim/lazy-lock.json`. Neovim and WezTerm use the Rosé Pine Moon theme.
+
+## Attribution
+
+This repository began as [Kun Chen's dotfiles](https://github.com/kunchenguid/dotfiles). His [YouTube walkthrough](https://youtu.be/5N-okeDdIuI) explains the original structure and bootstrap flow. The configuration here has since been adapted to my applications, packages, shell, and preferences.
 
 ## License
 
-This repo is licensed under MIT No Attribution.
-See `LICENSE`.
+Licensed under the MIT No Attribution license. See `LICENSE`.

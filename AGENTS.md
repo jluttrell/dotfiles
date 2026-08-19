@@ -2,7 +2,7 @@
 
 Deliberate decisions in this repo - do NOT silently revert them:
 
-- `homebrew.onActivation.cleanup = "zap"` in `configuration.nix` is intentional. It forces the good habit of declaring every Homebrew package in the Nix config instead of installing things ad-hoc, which keeps the machine reproducible. Do not soften it to `uninstall` or `none`. Users are warned about its effect in README.md; this note is for anyone tempted to change the setting itself.
+- Give every tool one owner. Use Home Manager/Nixpkgs for foundational CLIs that should follow `flake.lock` and for user-level program modules; use Homebrew for native macOS apps and application-like tools meant to track upstream releases, including AI coding agents. GUI versus CLI alone is not decisive. Keep project-specific toolchains in the owning project or its Nix development shell. Before adding anything, check `home.packages`, enabled `programs.*`, and `homebrew.brews`/`casks`; never declare the same tool twice.
 - Never commit `.no-mistakes/` validation evidence to this public repo. `.no-mistakes/` is gitignored; if a validation pipeline stages evidence into a branch, drop it before merging.
 
 ## Maintaining this file

@@ -17,7 +17,7 @@
       AppleInterfaceStyle = "Dark";
       KeyRepeat = 2;          # fast key repeat
       InitialKeyRepeat = 15;  # short delay before repeat
-      _HIHideMenuBar = true;  # auto-hide the menu bar
+      # _HIHideMenuBar = true;  # auto-hide the menu bar
       AppleShowAllExtensions = true;
     };
     dock.autohide = true;
@@ -28,18 +28,50 @@
   nix-homebrew = {
     enable = true;
     inherit user;
+    # Adopt an existing Homebrew installation when applying this config.
+    autoMigrate = true;
   };
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";  # remove anything not listed here
-    onActivation.autoUpdate = true;
+    onActivation.autoUpdate = false;
     onActivation.extraFlags = [ "--force" ];
     brews = [
+      "awscli"
+      "gh"
+      "git"
+      "go"
       "herdr"
+      "just"
+      "homebrew/core/opencode"
+      "tree"
+      "uv"
     ];
     casks = [
-      "wezterm"
+      "brave-browser"
+      "chatgpt"
       "claude-code"
+      "codex"
+      "discord"
+      "docker-desktop"
+      "firefox"
+      "ghostty"
+      "google-chrome"
+      "opencode-desktop"
+      "raycast"
+      "slack"
+      "spotify"
+      "topnotch"
+      "visual-studio-code"
+      "wezterm"
+      "whatsapp"
     ];
+    masApps = {
+      GarageBand = 682658836;
+      iMovie = 408981434;
+      Keynote = 361285480;
+      Numbers = 361304891;
+      Pages = 361309726;
+      Xcode = 497799835;
+    };
   };
 }
