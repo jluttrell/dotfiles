@@ -79,7 +79,7 @@ The application remains installed and upgraded through this repository. Only the
 
 ### Migrating an existing shell
 
-Home Manager owns the generated `~/.zshenv`, `~/.zprofile`, and `~/.zshrc`. Before the first switch on a machine with unmanaged versions of those files, move them to backup filenames so activation can create the managed files.
+Home Manager owns the generated `~/.zshenv`, `~/.zprofile`, and `~/.zshrc`. During the first switch, any conflicting unmanaged files are automatically renamed with a `.backup` extension, such as `~/.zshrc.backup`, before the managed files are created.
 
 ## Daily use
 
