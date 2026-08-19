@@ -5,8 +5,8 @@ My Apple Silicon Mac setup, managed with nix-darwin, Home Manager, nix-homebrew,
 ## What this manages
 
 - macOS defaults for appearance, keyboard repeat, the menu bar, Dock, Finder, and trackpad
-- Homebrew formulae for machine-wide CLIs such as the AWS CLI, GitHub CLI, Git, Go, Just, OpenCode, and uv
-- Homebrew casks for browsers, AI coding agents, Docker Desktop, Ghostty, messaging apps, Raycast, Spotify, VS Code, and WezTerm
+- Homebrew formulae for machine-wide CLIs and utilities such as the AWS CLI, GitHub CLI, Git, Go, Just, OpenCode, and uv
+- Homebrew casks for browsers, AI coding agents, Docker Desktop, Ghostty, messaging apps, skhd, Spotify, VS Code, and WezTerm
 - OpenSpec from its official Nix flake, installed through Home Manager
 - Mac App Store installations for Apple applications and Xcode
 - Home Manager packages for foundational CLIs such as ripgrep, fd, fzf, jq, lazygit, Neovim, and fnm
@@ -42,6 +42,41 @@ Then run:
 
 After the first switch, use the normal workflow below.
 
+### Enable application shortcuts
+
+Application shortcuts are managed by skhd. Homebrew installs the application during the first switch, but macOS requires the following one-time setup before the Caps Lock layer can work:
+
+```sh
+/Applications/skhd.app/Contents/MacOS/skhd --start-service
+```
+
+Approve the administrator prompt. This registers the user service and installs the root keyboard grabber and pinned Karabiner DriverKit package required by the Caps Lock hold rule. Run initial registration through the application bundle as shown above; the Homebrew `skhd` symlink cannot locate the bundled LaunchAgent during registration.
+
+Activate the installed DriverKit extension:
+
+```sh
+/Applications/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
+```
+
+Then complete these approvals in System Settings:
+
+1. Under **General > Login Items & Extensions > Driver Extensions**, enable `org.pqrs.Karabiner-DriverKit-VirtualHIDDevice`.
+2. Under **Privacy & Security > Accessibility**, enable `skhd`. If it is absent, add `/Applications/skhd.app`.
+
+Restart the services after enabling the DriverKit extension:
+
+```sh
+sudo launchctl kickstart -k system/org.pqrs.service.daemon.Karabiner-VirtualHIDDevice-Daemon
+sudo launchctl kickstart -k system/com.jackielii.skhd.grabber
+/Applications/skhd.app/Contents/MacOS/skhd --restart-service
+```
+
+Test a shortcut, such as holding Caps Lock and pressing `J` to open Ghostty. macOS may not show a separate `skhd` entry under Input Monitoring; no manual entry is needed when the shortcuts work. If macOS does show an Input Monitoring prompt or entry, enable it.
+
+Run `skhd --status` from a normal terminal for a setup summary. If the DriverKit manager application is missing or status reports that the HID daemon is not installed, run `/Applications/skhd.app/Contents/MacOS/skhd --install-dext`, then repeat the activation and restart steps above. Use `skhd --grabber-status` for detailed DriverKit, grabber, and keyboard matching diagnostics.
+
+The application remains installed and upgraded through this repository. Only these privileged macOS approvals and service activations are manual; nix-darwin and Homebrew cannot grant them automatically.
+
 ### Migrating an existing shell
 
 Home Manager owns the generated `~/.zshenv`, `~/.zprofile`, and `~/.zshrc`. Before the first switch on a machine with unmanaged versions of those files, move them to backup filenames so activation can create the managed files.
@@ -54,7 +89,7 @@ Edit the Nix configuration or a file under `home/`, then apply changes with:
 ./rebuild.sh
 ```
 
-Files under `home/` are linked directly into the home directory, so edits to Neovim, WezTerm, herdr, and agent instructions take effect without a rebuild. Package lists, shell configuration, and system defaults require a rebuild.
+Files under `home/` are linked directly into the home directory, so edits to Neovim, WezTerm, skhd, herdr, and agent instructions take effect without a rebuild. Package lists, shell configuration, and system defaults require a rebuild.
 
 ### Validate without applying
 
@@ -101,7 +136,7 @@ The `cc` and `co` aliases intentionally run Claude Code and Codex in high-agency
 - `home.nix` contains Home Manager packages, shell behavior, Starship, and links into `home/`.
 - `bootstrap.sh` performs the first installation and switch.
 - `rebuild.sh` applies later changes.
-- `home/` contains the live Neovim, WezTerm, herdr, and agent configuration linked into the home directory.
+- `home/` contains the live Neovim, WezTerm, skhd, herdr, and agent configuration linked into the home directory.
 
 ## Notes
 

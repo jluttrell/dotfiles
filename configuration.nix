@@ -35,6 +35,7 @@
     enable = true;
     onActivation.autoUpdate = false;
     onActivation.extraFlags = [ "--force" ];
+    taps = [ "jackielii/tap" ];
     brews = [
       "awscli"
       "gh"
@@ -56,8 +57,8 @@
       "firefox"
       "ghostty"
       "google-chrome"
+      "jackielii/tap/skhd-zig"
       "opencode-desktop"
-      "raycast"
       "slack"
       "spotify"
       "topnotch"

@@ -1,0 +1,20 @@
+# Hold Caps Lock to activate this layer. A quick tap still sends Caps Lock.
+:: app_launch @
+
+# IDs reported for this Mac's built-in keyboard by `hidutil list`.
+.device builtin { vendor: 0x0, product: 0x0 }
+
+.remap caps_lock [device builtin] {
+    tap                     : caps_lock
+    hold                    : app_launch
+    timeout                 : 200ms
+    hold_on_other_key_press : on
+}
+
+# Application shortcuts migrated from Raycast.
+app_launch < c    : /usr/bin/open -a "ChatGPT"
+app_launch < j    : /usr/bin/open -a "Ghostty"
+app_launch < k    : /usr/bin/open -a "Google Chrome"
+app_launch < l    : /usr/bin/open -a "Brave Browser"
+app_launch < s    : /usr/bin/open -a "Spotify"
+app_launch < w    : /usr/bin/open -a "WhatsApp"
