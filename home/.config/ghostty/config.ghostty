@@ -5,8 +5,7 @@ font-size = 15
 background-opacity = 0.8
 background-blur = 50
 
-# WezTerm's RESIZE decoration mode keeps the frame but hides the titlebar.
-macos-titlebar-style = hidden
+macos-titlebar-style = tabs
 
 # Match WezTerm's one-cell horizontal and half-cell vertical padding at 15 pt.
 window-padding-x = 9
