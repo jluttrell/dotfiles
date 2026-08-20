@@ -3,6 +3,7 @@
     "awscli",
     "ghostty",
     "herdr",
+    "hidutil",
     "nixpkgs",
     "nvim",
     "opencode",

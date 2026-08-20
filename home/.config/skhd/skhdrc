@@ -11,10 +11,11 @@
     hold_on_other_key_press : on
 }
 
-# Application shortcuts migrated from Raycast.
+# Application shortcuts
 app_launch < c    : /usr/bin/open -a "ChatGPT"
 app_launch < j    : /usr/bin/open -a "Ghostty"
 app_launch < k    : /usr/bin/open -a "Google Chrome"
 app_launch < l    : /usr/bin/open -a "Brave Browser"
+app_launch < 0x29 : /usr/bin/open -a "Visual Studio Code"
 app_launch < s    : /usr/bin/open -a "Spotify"
 app_launch < w    : /usr/bin/open -a "WhatsApp"
