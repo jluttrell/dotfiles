@@ -54,7 +54,7 @@ in
       pull = "git pull";
       m = "git switch main";
       cc = "claude --dangerously-skip-permissions";
-      co = "codex --full-auto";
+      co = "codex --approve-for-me";
     };
   };
 
