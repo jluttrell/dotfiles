@@ -15,6 +15,7 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    tree-sitter
     fnm
     openspec.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];

@@ -11,7 +11,7 @@ My Apple Silicon Mac setup, managed with nix-darwin, Home Manager, nix-homebrew,
 - Mac App Store installations for Apple applications and Xcode
 - Home Manager packages for foundational CLIs such as ripgrep, fd, fzf, jq, lazygit, Neovim, and fnm
 - Zsh, Starship, completions, aliases, autosuggestions, and syntax highlighting
-- Neovim, WezTerm, and herdr configuration
+- LazyVim, WezTerm, and herdr configuration
 - Shared personal instructions for Claude Code, Codex, and OpenCode
 
 The authoritative package lists are in `configuration.nix` and `home.nix`.
@@ -140,7 +140,7 @@ The `cc` and `co` aliases intentionally run Claude Code and Codex in high-agency
 
 ## Notes
 
-The first Neovim launch bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) and downloads the pinned plugins in `home/.config/nvim/lazy-lock.json`. Neovim and WezTerm use the Rosé Pine Moon theme.
+The first Neovim launch bootstraps the official [LazyVim](https://www.lazyvim.org/) starter and installs the plugin versions pinned in `home/.config/nvim/lazy-lock.json`. Run `:LazyHealth` after the initial installation to load and check every plugin. The configuration intentionally starts with LazyVim's defaults; add overrides under `home/.config/nvim/lua/config/` and plugin specs under `home/.config/nvim/lua/plugins/`.
 
 ## Attribution
 
