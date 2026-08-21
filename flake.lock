@@ -133,7 +133,28 @@
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs",
-        "openspec": "openspec"
+        "openspec": "openspec",
+        "treehouse": "treehouse"
+      }
+    },
+    "treehouse": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787171112,
+        "narHash": "sha256-PVGvSszSOQVekCOquibzx1AJ6va2OxfMj3M99+ZOnvs=",
+        "owner": "kunchenguid",
+        "repo": "treehouse",
+        "rev": "5e3d282592dfef5e60a5027797aa917f08c6cbf0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kunchenguid",
+        "repo": "treehouse",
+        "type": "github"
       }
     }
   },

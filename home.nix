@@ -1,4 +1,4 @@
-{ config, openspec, pkgs, user, ... }:
+{ config, openspec, pkgs, treehouse, user, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
@@ -18,6 +18,7 @@ in
     tree-sitter
     fnm
     openspec.packages.${pkgs.stdenv.hostPlatform.system}.default
+    treehouse.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
   fonts.fontconfig.enable = true;
   home.sessionPath = [ "$HOME/go/bin" ];
