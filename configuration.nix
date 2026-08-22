@@ -12,6 +12,15 @@
     home = "/Users/${user}";
   };
   system.stateVersion = 6;
+
+  # Keep long-running local tasks alive while connected to power, even after
+  # locking or display sleep. The charger-only flag preserves normal battery
+  # sleep behavior.
+  system.activationScripts.postActivation.text = ''
+    echo "configuring charger power management..." >&2
+    /usr/bin/pmset -c sleep 0
+  '';
+
   system.defaults = {
     NSGlobalDomain = {
       AppleInterfaceStyle = "Dark";
