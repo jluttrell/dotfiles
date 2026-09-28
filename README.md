@@ -5,11 +5,11 @@ My Apple Silicon Mac setup, managed with nix-darwin, Home Manager, nix-homebrew,
 ## What this manages
 
 - macOS defaults for appearance, keyboard repeat, the menu bar, Dock, Finder, and trackpad
-- Homebrew formulae for machine-wide CLIs and utilities such as the AWS CLI, GitHub CLI, Git, Go, Just, OpenCode, and uv
+- Homebrew formulae for machine-wide CLIs and utilities such as the AWS CLI, GitHub CLI, Git, Go, Just, lazygit, OpenCode, and uv
 - Homebrew casks for browsers, AI coding agents, Docker Desktop, Ghostty, messaging apps, skhd, Spotify, VS Code, and WezTerm
 - OpenSpec from its official Nix flake, installed through Home Manager
 - Mac App Store installations for Apple applications and Xcode
-- Home Manager packages for foundational CLIs such as ripgrep, fd, fzf, jq, lazygit, Neovim, and fnm
+- Home Manager packages for foundational CLIs such as ripgrep, fd, fzf, jq, delta, Neovim, and fnm
 - Zsh, Starship, completions, aliases, autosuggestions, and syntax highlighting
 - LazyVim, WezTerm, and herdr configuration
 - Shared personal instructions for Claude Code, Codex, and OpenCode
@@ -111,7 +111,7 @@ nix build .#darwinConfigurations.mac.system --dry-run
 Every tool has one package manager. Declaring the same tool in multiple places installs competing copies and makes `PATH` decide which one runs.
 
 - Home Manager and Nixpkgs own foundational command-line tools that should follow `flake.lock`, plus programs whose Home Manager modules also own useful configuration.
-- Homebrew owns native macOS applications and application-like tools that should track upstream releases more directly. This includes Claude Code, Codex, and OpenCode.
+- Homebrew owns native macOS applications and application-like tools that should track upstream releases more directly. This includes Claude Code, Codex, OpenCode, and lazygit. Home Manager can still link their configuration files without owning the package.
 - `homebrew.masApps` owns Mac App Store applications.
 - Project-specific runtimes and dependencies belong in the project or its Nix development shell rather than this machine-wide configuration.
 

@@ -53,6 +53,7 @@
       "go"
       "herdr"
       "just"
+      "lazygit"
       "homebrew/core/opencode"
       "tree"
       "uv"

@@ -13,7 +13,7 @@ in
     ripgrep   # fast search
     fd        # fast find
     jq        # json on the command line
-    lazygit
+    delta
     neovim
     tree-sitter
     fnm
@@ -43,8 +43,8 @@ in
     initContent = ''
       bindkey '^f' autosuggest-accept
 
-      # The Nixpkgs lazygit package has a generator, but no completion file.
-      eval "$(${pkgs.lazygit}/bin/lazygit completion zsh)"
+      # Lazygit's Homebrew formula does not ship completion files.
+      eval "$(lazygit completion zsh)"
 
       # Nixpkgs ships fnm's completion; this hook manages Node version switching.
       eval "$(${pkgs.fnm}/bin/fnm env --use-on-cd --shell zsh)"
@@ -73,7 +73,9 @@ in
     };
   };
 
-  # Edit-in-place: the real file stays in my repo, ~/.config just points at it.
+  # Edit-in-place: the real files stay in my repo, home directory links point at them.
+  home.file."Library/Application Support/lazygit/config.yml".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/lazygit/config.yml";
   home.file.".config/ghostty".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/ghostty";
   home.file.".config/wezterm".source =

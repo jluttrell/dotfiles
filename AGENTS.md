@@ -2,7 +2,7 @@
 
 Deliberate decisions in this repo - do NOT silently revert them:
 
-- Give every tool one owner. Use Home Manager/Nixpkgs for foundational CLIs that should follow `flake.lock` and for user-level program modules; use Homebrew for native macOS apps and application-like tools meant to track upstream releases, including AI coding agents. GUI versus CLI alone is not decisive. Keep project-specific toolchains in the owning project or its Nix development shell. Before adding anything, check `home.packages`, enabled `programs.*`, and `homebrew.brews`/`casks`; never declare the same tool twice.
+- Give every tool one package owner. Use Home Manager/Nixpkgs for foundational CLIs that should follow `flake.lock` and for user-level program modules; use Homebrew for native macOS apps and application-like tools meant to track upstream releases, including AI coding agents and interactive apps such as lazygit. GUI versus CLI alone is not decisive. Home Manager can link configuration files independently of package ownership. Keep project-specific toolchains in the owning project or its Nix development shell. Before adding anything, check `home.packages`, enabled `programs.*`, and `homebrew.brews`/`casks`; never declare the same tool twice.
 - Never commit `.no-mistakes/` validation evidence to this public repo. `.no-mistakes/` is gitignored; if a validation pipeline stages evidence into a branch, drop it before merging.
 
 ## Maintaining this file
