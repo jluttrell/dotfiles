@@ -33,6 +33,7 @@
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
     finder.CreateDesktop = false;          # clean desktop
     trackpad.Clicking = true;              # tap to click
+    universalaccess.reduceMotion = true;  # reduce Spaces and app animations
   };
   nix-homebrew = {
     enable = true;
@@ -68,6 +69,7 @@
       "google-chrome"
       "jackielii/tap/skhd-zig"
       "opencode-desktop"
+      "rectangle"
       "slack"
       "spotify"
       "topnotch"

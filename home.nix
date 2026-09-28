@@ -1,4 +1,4 @@
-{ config, openspec, pkgs, treehouse, user, ... }:
+{ config, lib, openspec, pkgs, treehouse, user, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
@@ -84,6 +84,16 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
   home.file.".config/skhd".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/skhd";
+  home.file.".config/rectangle".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/rectangle";
+
+  # Rectangle consumes and renames its startup import, so stage a fresh copy.
+  home.activation.rectangleConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    run mkdir -p "$HOME/Library/Application Support/Rectangle"
+    run cp "$HOME/.config/rectangle/RectangleConfig.json" \
+      "$HOME/Library/Application Support/Rectangle/RectangleConfig.json"
+  '';
+
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
 

@@ -77,6 +77,14 @@ Run `skhd --status` from a normal terminal for a setup summary. If the DriverKit
 
 The application remains installed and upgraded through this repository. Only these privileged macOS approvals and service activations are manual; nix-darwin and Homebrew cannot grant them automatically.
 
+### Rectangle settings
+
+The free Rectangle app is installed through Homebrew. Its settings and shortcuts are saved in `home/.config/rectangle/RectangleConfig.json`, initially copied from the exported configuration. Home Manager links that directory to `~/.config/rectangle` and stages a copy at `~/Library/Application Support/Rectangle/RectangleConfig.json` on each rebuild.
+
+Rectangle [imports that file on launch and renames it afterward](https://github.com/rxhanson/Rectangle#import--export-json-config). After editing the repo JSON, run `./rebuild.sh`, then quit and reopen Rectangle manually. Changes made in Rectangle's settings are not written back to the repo; use its Export button and replace the repo JSON to keep them. The next staged import reapplies the saved configuration.
+
+On a fresh Mac, open Rectangle after the first rebuild and grant its requested Accessibility permission in System Settings. The saved configuration enables launch at login.
+
 ### Migrating an existing shell
 
 Home Manager owns the generated `~/.zshenv`, `~/.zprofile`, and `~/.zshrc`. During the first switch, any conflicting unmanaged files are automatically renamed with a `.backup` extension, such as `~/.zshrc.backup`, before the managed files are created.
@@ -89,7 +97,7 @@ Edit the Nix configuration or a file under `home/`, then apply changes with:
 ./rebuild.sh
 ```
 
-Files under `home/` are linked directly into the home directory, so edits to Neovim, WezTerm, skhd, herdr, and agent instructions take effect without a rebuild. Package lists, shell configuration, and system defaults require a rebuild.
+Files under `home/` are linked directly into the home directory, so edits to Neovim, WezTerm, skhd, herdr, and agent instructions take effect without a rebuild. Rectangle settings require a rebuild and a manual app restart to import the JSON. Package lists, shell configuration, and system defaults require a rebuild.
 
 ### Validate without applying
 
