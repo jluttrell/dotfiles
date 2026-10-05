@@ -55,6 +55,7 @@ in
       push = "git push";
       pull = "git pull";
       m = "git switch main";
+      lg = "lazygit";
       cc = "claude --dangerously-skip-permissions";
       co = "codex --approve-for-me";
     };
