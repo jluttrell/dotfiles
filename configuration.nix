@@ -79,7 +79,6 @@
       "spotify"
       "topnotch"
       "visual-studio-code"
-      "wezterm"
       "whatsapp"
     ];
     masApps = {

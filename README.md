@@ -6,12 +6,12 @@ My Apple Silicon Mac setup, managed with nix-darwin, Home Manager, nix-homebrew,
 
 - macOS defaults for appearance, keyboard repeat, the menu bar, Dock, Finder, and trackpad
 - Homebrew formulae for machine-wide CLIs and utilities such as the AWS CLI, GitHub CLI, Git, Go, Just, lazygit, OpenCode, and uv
-- Homebrew casks for browsers, AI coding agents, Docker Desktop, Ghostty, messaging apps, skhd, Spotify, VS Code, and WezTerm
+- Homebrew casks for browsers, AI coding agents, Docker Desktop, Ghostty, messaging apps, skhd, Spotify, and VS Code
 - OpenSpec from its official Nix flake, installed through Home Manager
 - Mac App Store installations for Apple applications and Xcode
 - Home Manager packages for foundational CLIs such as ripgrep, fd, fzf, jq, delta, Neovim, and fnm
 - Zsh, Starship, completions, aliases, autosuggestions, and syntax highlighting
-- LazyVim, WezTerm, and herdr configuration
+- LazyVim, Ghostty, and herdr configuration
 - Shared personal instructions for Claude Code, Codex, and OpenCode
 
 The authoritative package lists are in `configuration.nix` and `home.nix`.
@@ -97,7 +97,7 @@ Edit the Nix configuration or a file under `home/`, then apply changes with:
 ./rebuild.sh
 ```
 
-Files under `home/` are linked directly into the home directory, so edits to Neovim, WezTerm, skhd, herdr, and agent instructions take effect without a rebuild. Rectangle settings require a rebuild and a manual app restart to import the JSON. Package lists, shell configuration, and system defaults require a rebuild.
+Files under `home/` are linked directly into the home directory, so edits to Neovim, Ghostty, skhd, herdr, and agent instructions take effect without a rebuild. Rectangle settings require a rebuild and a manual app restart to import the JSON. Package lists, shell configuration, and system defaults require a rebuild.
 
 ### Validate without applying
 
@@ -125,6 +125,8 @@ rg -n 'tool-name' home.nix configuration.nix
 
 `nix-homebrew.autoMigrate = true` adopts an existing Homebrew installation when applying the configuration. Rebuilds install the formulae, casks, and Mac App Store applications declared in `configuration.nix`, but do not remove undeclared Homebrew packages, applications, or taps.
 
+After removing a cask declaration, run `brew uninstall --cask <cask-name>` to uninstall the application, then rebuild to remove any managed configuration links.
+
 ## Shell behavior
 
 Home Manager generates the shell files from `home.nix`:
@@ -144,7 +146,7 @@ The `cc` and `co` aliases intentionally run Claude Code and Codex in high-agency
 - `home.nix` contains Home Manager packages, shell behavior, Starship, and links into `home/`.
 - `bootstrap.sh` performs the first installation and switch.
 - `rebuild.sh` applies later changes.
-- `home/` contains the live Neovim, WezTerm, skhd, herdr, and agent configuration linked into the home directory.
+- `home/` contains the live Neovim, Ghostty, skhd, herdr, and agent configuration linked into the home directory.
 
 ## Notes
 
