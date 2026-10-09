@@ -45,7 +45,10 @@
     enable = true;
     onActivation.autoUpdate = false;
     onActivation.extraFlags = [ "--force" ];
-    taps = [ "jackielii/tap" ];
+    taps = [
+      "jackielii/tap"
+      "largemodgames/spotatui"
+    ];
     brews = [
       "awscli"
       "gh"
@@ -55,6 +58,7 @@
       "just"
       "lazygit"
       "homebrew/core/opencode"
+      "largemodgames/spotatui/spotatui"
       "tree"
       "uv"
     ];
